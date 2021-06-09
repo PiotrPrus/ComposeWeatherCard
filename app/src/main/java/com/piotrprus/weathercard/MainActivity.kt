@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Water
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,6 +110,20 @@ private fun WeatherCard(data: WeatherItem) {
                     )
                 }
             }
+            ForecastSlider()
         }
     }
+}
+
+@Composable
+fun ForecastSlider() {
+    val (sliderValue, setSliderValue) = remember { mutableStateOf(1f) }
+    Slider(
+        modifier = Modifier.fillMaxWidth(),
+        value = sliderValue,
+        valueRange = 1f..12f,
+        steps = 12,
+        onValueChange = {
+            setSliderValue(it)
+        })
 }
