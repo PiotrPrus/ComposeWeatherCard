@@ -3,6 +3,7 @@ package com.piotrprus.weathercard
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -15,6 +16,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.piotrprus.weathercard.ui.theme.WeatherCardTheme
@@ -117,13 +121,33 @@ private fun WeatherCard(data: WeatherItem) {
 
 @Composable
 fun ForecastSlider() {
-    val (sliderValue, setSliderValue) = remember { mutableStateOf(1f) }
-    Slider(
-        modifier = Modifier.fillMaxWidth(),
-        value = sliderValue,
-        valueRange = 1f..12f,
-        steps = 12,
-        onValueChange = {
-            setSliderValue(it)
-        })
+    val (sliderValue, setSliderValue) = remember { mutableStateOf(6f) }
+    val steps = 11
+    val drawPadding = with(LocalDensity.current) { 10.dp.toPx() }
+    Box(contentAlignment = Alignment.Center) {
+        Canvas(
+            modifier = Modifier
+                .height(16.dp)
+                .fillMaxWidth()
+        ) {
+            val yStart = 0f
+            val yEnd = size.height
+            val distance = (size.width.minus(2 * drawPadding)).div(steps + 1)
+            (0..steps.plus(1)).forEach {
+                drawLine(
+                    color = Color.DarkGray,
+                    start = Offset(x = drawPadding + it.times(distance), y = yStart),
+                    end = Offset(x = drawPadding + it.times(distance), y = yEnd)
+                )
+            }
+        }
+        Slider(
+            modifier = Modifier.fillMaxWidth(),
+            value = sliderValue,
+            valueRange = 0f..12f,
+            steps = steps,
+            onValueChange = {
+                setSliderValue(it)
+            })
+    }
 }
