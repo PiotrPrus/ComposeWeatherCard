@@ -3,7 +3,6 @@ package com.piotrprus.weathercard
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -61,7 +60,6 @@ private fun WeatherCard(data: WeatherItem) {
             .padding(8.dp),
         elevation = 4.dp,
         shape = RoundedCornerShape(12.dp),
-        backgroundColor = MaterialTheme.colors.primary
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(text = "Hong Kong", style = MaterialTheme.typography.h4)
@@ -111,6 +109,5 @@ private fun WeatherCard(data: WeatherItem) {
                 }
             }
         }
-
     }
 }
