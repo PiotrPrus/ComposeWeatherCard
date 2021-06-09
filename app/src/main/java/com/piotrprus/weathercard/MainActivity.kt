@@ -146,8 +146,15 @@ fun ForecastSlider() {
             value = sliderValue,
             valueRange = 0f..12f,
             steps = steps,
+            colors = customSliderColors(),
             onValueChange = {
                 setSliderValue(it)
             })
     }
 }
+
+@Composable
+private fun customSliderColors(): SliderColors = SliderDefaults.colors(
+    activeTickColor = Color.Transparent,
+    inactiveTickColor = Color.Transparent
+)
