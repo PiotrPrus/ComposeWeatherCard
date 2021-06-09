@@ -85,7 +85,7 @@ private fun WeatherCard(data: WeatherItem) {
                     modifier = Modifier.size(60.dp),
                     imageVector = Icons.Default.WbSunny,
                     contentDescription = "Sun icon",
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colors.onSurface
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
