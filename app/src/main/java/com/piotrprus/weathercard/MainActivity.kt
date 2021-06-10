@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -124,21 +126,42 @@ fun ForecastSlider() {
     val (sliderValue, setSliderValue) = remember { mutableStateOf(6f) }
     val steps = 11
     val drawPadding = with(LocalDensity.current) { 10.dp.toPx() }
+    val textSize = with(LocalDensity.current) { 10.dp.toPx() }
+    val lineHeightDp = 10.dp
+    val lineHeightPx = with(LocalDensity.current) { lineHeightDp.toPx() }
+    val canvasHeight = 50.dp
+    val textPaint = android.graphics.Paint().apply {
+        color = if (isSystemInDarkTheme()) 0xffffffff.toInt() else 0xffff47586B.toInt()
+        textAlign = android.graphics.Paint.Align.CENTER
+        this.textSize = textSize
+    }
     Box(contentAlignment = Alignment.Center) {
         Canvas(
             modifier = Modifier
-                .height(16.dp)
+                .height(canvasHeight)
                 .fillMaxWidth()
+                .padding(
+                    top = canvasHeight
+                        .div(2)
+                        .minus(lineHeightDp.div(2))
+                )
         ) {
             val yStart = 0f
-            val yEnd = size.height
             val distance = (size.width.minus(2 * drawPadding)).div(steps + 1)
-            (0..steps.plus(1)).forEach {
+            (0..steps.plus(1)).forEach { step ->
                 drawLine(
                     color = Color.DarkGray,
-                    start = Offset(x = drawPadding + it.times(distance), y = yStart),
-                    end = Offset(x = drawPadding + it.times(distance), y = yEnd)
+                    start = Offset(x = drawPadding + step.times(distance), y = yStart),
+                    end = Offset(x = drawPadding + step.times(distance), y = lineHeightPx)
                 )
+                if (step.rem(3) == 0) {
+                    this.drawContext.canvas.nativeCanvas.drawText(
+                        "12.30",
+                        drawPadding + step.times(distance),
+                        size.height,
+                        textPaint
+                    )
+                }
             }
         }
         Slider(
