@@ -77,7 +77,7 @@ private fun WeatherCard(list: List<WeatherItem>, selectedValue: Int, onValueChan
         Column(modifier = Modifier.padding(12.dp)) {
             MeasurementView(item)
             ForecastSlider(
-                list.map { it.date },
+                list.map { it.date.split(",")[1] },
                 onValueChange = { onValueChange(it) },
                 value = selectedValue.toFloat()
             )
@@ -160,15 +160,15 @@ fun ForecastSlider(dates: List<String>, value: Float, onValueChange: (Int) -> Un
         ) {
             val yStart = 0f
             val distance = (size.width.minus(2 * drawPadding)).div(dates.size.minus(1))
-            dates.forEachIndexed { index, step ->
+            dates.forEachIndexed { index, date ->
                 drawLine(
                     color = Color.DarkGray,
                     start = Offset(x = drawPadding + index.times(distance), y = yStart),
                     end = Offset(x = drawPadding + index.times(distance), y = lineHeightPx)
                 )
-                if (index.rem(3) == 0) {
+                if (index.rem(2) == 1) {
                     this.drawContext.canvas.nativeCanvas.drawText(
-                        step,
+                        date,
                         drawPadding + index.times(distance),
                         size.height,
                         textPaint
@@ -192,5 +192,5 @@ fun ForecastSlider(dates: List<String>, value: Float, onValueChange: (Int) -> Un
 @Composable
 private fun customSliderColors(): SliderColors = SliderDefaults.colors(
     activeTickColor = Color.Transparent,
-//    inactiveTickColor = Color.Transparent
+    inactiveTickColor = Color.Transparent
 )
