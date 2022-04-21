@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +13,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Water
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -23,26 +21,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.piotrprus.weathercard.ui.theme.WeatherCardTheme
 
 class MainActivity : ComponentActivity() {
-    private val forecastMockState = mutableStateListOf(
-        WeatherItem(date = "Mon, 8:00 AM, Cloudy", temperature = 12, 30, 2, R.drawable.cloudy),
-        WeatherItem(date = "Mon, 9:00 AM, Cloudy", temperature = 14, 60, 3, R.drawable.cloudy),
-        WeatherItem(date = "Mon, 10:00 AM, Mostly cloudy", temperature = 15, 80, 5, R.drawable.rain),
-        WeatherItem(date = "Mon, 11:00 AM, Mostly sunny", temperature = 15, 30, 2, R.drawable.sunny),
-        WeatherItem(date = "Mon, 12:00 PM, Mostly sunny", temperature = 18, 20, 1, R.drawable.sunny),
-        WeatherItem(date = "Mon, 1:00 PM, Sunny", temperature = 20, 0, 1, R.drawable.sunny),
-        WeatherItem(date = "Mon, 2:00 PM, Sunny", temperature = 20, 0, 2, R.drawable.sunny),
-        WeatherItem(date = "Mon, 3:00 PM, Sunny", temperature = 19, 0, 2, R.drawable.sunny),
-        WeatherItem(date = "Mon, 4:00 PM, Sunny", temperature = 19, 0, 2, R.drawable.sunny),
-        WeatherItem(date = "Mon, 5:00 PM, Sunny", temperature = 17, 0, 3, R.drawable.sunny),
-        WeatherItem(date = "Mon, 6:00 PM, Heavy showers", temperature = 16, 80, 7, R.drawable.rain),
-        WeatherItem(date = "Mon, 7:00 PM, Heavy showers", temperature = 15, 90, 9, R.drawable.rain),
-    )
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -63,12 +47,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun WeatherCard(list: List<WeatherItem>, selectedValue: Int, onValueChange: (Int) -> Unit) {
+fun WeatherCard(list: List<WeatherItem>, selectedValue: Int, onValueChange: (Int) -> Unit) {
     val item by remember(selectedValue, list) {
         derivedStateOf { list[selectedValue] }
     }
     Card(
         modifier = Modifier
+            .testTag(WEATHER_CARD_TAG)
             .fillMaxWidth()
             .padding(12.dp),
         elevation = 4.dp,
@@ -89,7 +74,11 @@ private fun WeatherCard(list: List<WeatherItem>, selectedValue: Int, onValueChan
 private fun MeasurementView(data: WeatherItem) {
     Text(text = "Hong Kong", style = MaterialTheme.typography.h5)
     Spacer(modifier = Modifier.height(8.dp))
-    Text(text = data.date, style = MaterialTheme.typography.body2.copy(color = Color.Gray))
+    Text(
+        modifier = Modifier.testTag(DATE_TAG),
+        text = data.date,
+        style = MaterialTheme.typography.body2.copy(color = Color.Gray)
+    )
     Spacer(modifier = Modifier.height(8.dp))
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -97,7 +86,11 @@ private fun MeasurementView(data: WeatherItem) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row {
-            Text(text = data.temperature.toString(), style = MaterialTheme.typography.h1)
+            Text(
+                modifier = Modifier.testTag(TEMPERATURE_TAG),
+                text = data.temperature.toString(),
+                style = MaterialTheme.typography.h1
+            )
             Text(
                 modifier = Modifier.padding(top = 10.dp),
                 text = "°C",
@@ -177,7 +170,7 @@ fun ForecastSlider(dates: List<String>, value: Float, onValueChange: (Int) -> Un
             }
         }
         Slider(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.testTag(SLIDER_TAG).fillMaxWidth(),
             value = sliderValue,
             valueRange = 0f..dates.size.minus(1).toFloat(),
             steps = dates.size.minus(2),
