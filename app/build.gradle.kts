@@ -43,8 +43,12 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += setOf("META-INF/AL2.0")
-            excludes += setOf("META-INF/LGPL2.1")
+            excludes += setOf("META-INF/{AL2.0,LGPL2.1}")
+        }
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 }
@@ -61,7 +65,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:${rootProject.extra["compose_version"]}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
     implementation("androidx.activity:activity-compose:1.4.0")
+    testImplementation("junit:junit:4.+")
+    testImplementation("org.robolectric:robolectric:4.7.3")
     // Test rules and transitive dependencies:
+    testImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
 // Needed for createComposeRule, but not createAndroidComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:${rootProject.extra["compose_version"]}")
